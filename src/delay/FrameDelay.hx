@@ -10,15 +10,19 @@ class FrameDelay implements IDelayObject
 {
 	public var callback:Function;
 	public var complete(get, null):Bool;
+	public var repeat:Int;
+	public var fireCount:Int = 0;
+
 	var params:Array<Dynamic>;
 	var frames:Int;
 	var count:Int = 0;
 	
-	public function new(frames:Int, callback:Function, params:Array<Dynamic>=null) 
+	public function new(frames:Int, callback:Function, params:Array<Dynamic>=null, repeat:Int=0) 
 	{
 		this.frames = frames;
 		this.callback = callback;
 		this.params = params;
+		this.repeat = repeat;
 	}
 	
 	function get_complete():Bool 
@@ -30,5 +34,10 @@ class FrameDelay implements IDelayObject
 	public function dispatch():Void
 	{
 		FunctionUtil.dispatch(callback, params); 
+	}
+	
+	public function reset():Void
+	{
+		count = 0;
 	}
 }

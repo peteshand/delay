@@ -13,24 +13,27 @@ class TimeDelay implements IDelayObject
 {
 	public var callback:Function;
 	public var complete(get, null):Bool;
+	public var repeat:Int;
+	public var fireCount:Int = 0;
+
 	var params:Array<Dynamic>;
 	var startTime:Float;
 	var endTime:Float;
 	var millisecondsDuration:Float;
 	
-	public function new(duration:Float, callback:Function, params:Array<Dynamic>=null, timeUnit:TimeUnit=null, precision:Bool=false) 
+	public function new(duration:Float, callback:Function, params:Array<Dynamic>=null, timeUnit:TimeUnit=null, repeat:Int=0) 
 	{
 		this.callback = callback;
 		this.params = params;
-		
+		this.repeat = repeat;
+
 		if (timeUnit == TimeUnit.MILLISECONDS) millisecondsDuration = duration;
 		else if (timeUnit == TimeUnit.SECONDS) millisecondsDuration = TimeUtils.secondsToMil(duration);
 		else if (timeUnit == TimeUnit.MINUTES) millisecondsDuration = TimeUtils.minutesToMil(duration);
 		else if (timeUnit == TimeUnit.HOURS) millisecondsDuration = TimeUtils.hoursToMil(duration);
 		else if (timeUnit == TimeUnit.DAYS) millisecondsDuration = TimeUtils.daysToMil(duration);
 		
-		startTime = GlobalTime.nowTime();
-		endTime = startTime + millisecondsDuration;
+		reset();
 	}
 	
 	function get_complete():Bool 
@@ -42,5 +45,11 @@ class TimeDelay implements IDelayObject
 	public function dispatch():Void
 	{
 		FunctionUtil.dispatch(callback, params); 
+	}
+	
+	public function reset():Void
+	{
+		startTime = GlobalTime.nowTime();
+		endTime = startTime + millisecondsDuration;
 	}
 }

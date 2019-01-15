@@ -28,7 +28,12 @@ class Delay
 		{
 			if (delayObjects[i].complete) {
 				delayObjects[i].dispatch();
-				delayObjects.splice(i, 1);
+				if (delayObjects[i].repeat != -1 && delayObjects[i].fireCount >= delayObjects[i].repeat){
+					delayObjects.splice(i, 1);
+				} else {
+					delayObjects[i].fireCount++;
+					delayObjects[i].reset();
+				}
 			}
 			else i++;
 		}
@@ -41,17 +46,17 @@ class Delay
 		Delay.byFrames(1, callback, params);
 	}
 	
-	public static function byFrames(frames:Int, callback:Function, params:Array<Dynamic>=null):Void 
+	public static function byFrames(frames:Int, callback:Function, ?params:Array<Dynamic>=null, ?repeat:Int=0):Void 
 	{
 		Delay.init();
-		delayObjects.push(new FrameDelay(frames, callback, params));
+		delayObjects.push(new FrameDelay(frames, callback, params, repeat));
 	}
 	
-	public static function byTime(duration:Float, callback:Function, params:Array<Dynamic>=null, timeUnit:TimeUnit=null, precision:Bool=false):Void 
+	public static function byTime(duration:Float, callback:Function, ?params:Array<Dynamic>=null, ?timeUnit:TimeUnit=null, ?repeat:Int=0):Void 
 	{
 		Delay.init();
 		if (timeUnit == null) timeUnit = TimeUnit.SECONDS;
-		delayObjects.push(new TimeDelay(duration, callback, params, timeUnit, precision));
+		delayObjects.push(new TimeDelay(duration, callback, params, timeUnit, repeat));
 	}
 	
 	public static function killDelay(callback:Function):Void 
