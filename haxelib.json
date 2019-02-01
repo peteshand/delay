@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": ["delay", "timer"],
 	"description": "Delays a callback until the nextframe, byFrames or byTime",
-	"version": "1.2.1",
-	"releasenote": "add repeat option",
+	"version": "1.2.2",
+	"releasenote": "fix repeat issue",
 	"contributors": [ "p.j.shand" ],
 	"classPath": "src/",
 	"dependencies": {

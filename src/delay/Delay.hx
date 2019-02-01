@@ -28,11 +28,12 @@ class Delay
 		{
 			if (delayObjects[i].complete) {
 				delayObjects[i].dispatch();
-				if (delayObjects[i].repeat != -1 && delayObjects[i].fireCount >= delayObjects[i].repeat){
+				if (delayObjects[i] == null || (delayObjects[i].repeat != -1 && delayObjects[i].fireCount >= delayObjects[i].repeat)){
 					delayObjects.splice(i, 1);
 				} else {
 					delayObjects[i].fireCount++;
 					delayObjects[i].reset();
+					i++;
 				}
 			}
 			else i++;
