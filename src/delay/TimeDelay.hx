@@ -15,17 +15,20 @@ class TimeDelay implements IDelayObject
 	public var complete(get, null):Bool;
 	public var repeat:Int;
 	public var fireCount:Int = 0;
-
+	public var id:String;
+	public var markedForRemoval:Bool = false;
+	
 	var params:Array<Dynamic>;
 	var startTime:Float;
 	var endTime:Float;
 	var millisecondsDuration:Float;
 	
-	public function new(duration:Float, callback:Function, params:Array<Dynamic>=null, timeUnit:TimeUnit=null, repeat:Int=0) 
+	public function new(duration:Float, callback:Function, params:Array<Dynamic>=null, timeUnit:TimeUnit=null, repeat:Int=0, ?id:String) 
 	{
 		this.callback = callback;
 		this.params = params;
 		this.repeat = repeat;
+		this.id = id;
 
 		if (timeUnit == TimeUnit.MILLISECONDS) millisecondsDuration = duration;
 		else if (timeUnit == TimeUnit.SECONDS) millisecondsDuration = TimeUtils.secondsToMil(duration);

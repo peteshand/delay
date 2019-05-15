@@ -15,28 +15,35 @@ class Delay
 	static var initialized:Bool = false;
 
 	static function init() { 
+		
 		if (initialized) return;
 		initialized = true;
 		delayObjects = new Array<IDelayObject>();
 		EnterFrame.add(OnTick);
-    }
+  }
 	
 	static private function OnTick() 
 	{
-		var i:Int = 0;
-		while (i < delayObjects.length) 
-		{
-			if (delayObjects[i].complete) {
-				delayObjects[i].dispatch();
-				if (delayObjects[i] == null || (delayObjects[i].repeat != -1 && delayObjects[i].fireCount >= delayObjects[i].repeat)){
-					delayObjects.splice(i, 1);
+		for (delayObject in delayObjects){
+			if (delayObject.complete) {
+				delayObject.dispatch();
+				if (delayObject.repeat != -1 && delayObject.fireCount >= delayObject.repeat){
+					delayObject.markedForRemoval = true;
 				} else {
-					delayObjects[i].fireCount++;
-					delayObjects[i].reset();
-					i++;
+					delayObject.fireCount++;
+					delayObject.reset();
 				}
 			}
-			else i++;
+		}
+		
+
+		var i:Int = delayObjects.length-1;
+		while (i >= 0) 
+		{
+			if (delayObjects[i] == null || delayObjects[i].markedForRemoval){
+				delayObjects.splice(i, 1);
+			}
+			i--;
 		}
 	}
 	
@@ -57,7 +64,7 @@ class Delay
 	{
 		Delay.init();
 		if (timeUnit == null) timeUnit = TimeUnit.SECONDS;
-		delayObjects.push(new TimeDelay(duration, callback, params, timeUnit, repeat));
+		delayObjects.push(new TimeDelay(duration, callback, params, timeUnit, repeat, id));
 	}
 	
 	public static function killDelay(callback:Function):Void 
